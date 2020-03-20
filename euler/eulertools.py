@@ -33,10 +33,6 @@ def primes_to(n):
 
     ret = []
 
-    for k in enumerate(record):
-
-        print(k)
-
     for i in range(2,len(record)):
 
         if record[i]:
