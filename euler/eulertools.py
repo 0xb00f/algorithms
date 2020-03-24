@@ -44,3 +44,31 @@ def primes_to(n):
 #return the nth prime (a stored list, then a generator?)
 
 # TODO: decompose into list of prime factors
+def prime_factors(n):
+	
+	ret = []
+
+	while n % 2 == 0:
+
+		ret.append(2)
+		n /= 2
+
+	i = 3
+	
+	while i < math.sqrt(n):
+
+		while n % i == 0:
+			
+			ret.append(i)
+			n //= i
+
+		i += 2
+
+	if n > 2:
+
+		ret.append(n)
+
+	return ret
+
+
+			
