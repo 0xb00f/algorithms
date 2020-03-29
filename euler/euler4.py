@@ -1,8 +1,19 @@
-def is_palindrome(n):
+def is_palindrome(x):
+        
+        x = str(x)
+        hi = len(x)-1
+        lo = 0
 
-	num_list = list(map(int,str(n)))
+        while lo < hi:
 
-	return num_list == num_list[::-1]
+                if x[lo] != x[hi]:
+
+                        return False
+
+                lo += 1
+                hi -= 1
+
+        return True
 
 vals = [x for x in range(100,1000)]
 
