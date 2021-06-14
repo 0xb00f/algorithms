@@ -40,18 +40,17 @@ void build_ctext_dict(multimap<int,string>& pmm, map<string,set<string>>& m, str
 
 bool invalid_mapping(vector<char>& record, vector<char>& rev_record, string crypt, string cand)
 {
-	bool err = false;
 	int i;
 	for(i=0; i < cand.length(); i++)
 	{
 		// not yet mapped
 		if(record[crypt[i] - 'a'] == '*' && rev_record[cand[i] - 'a'] == '*') continue;
 		// mapped to something else
-		if(record[crypt[i] - 'a'] != cand[i]) {err = true; break;} 
+		if(record[crypt[i] - 'a'] != cand[i]) return true; 
 		// already mapped into by something else
-		if(rev_record[cand[i] - 'a'] != crypt[i]) {err = true; break;} 	
+		if(rev_record[cand[i] - 'a'] != crypt[i]) return true; 	
 	}
-	return err;
+	return false;
 }
 
 bool success = false;
