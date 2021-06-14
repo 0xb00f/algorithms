@@ -55,7 +55,7 @@ bool invalid_mapping(vector<char>& record, vector<char>& rev_record, string cryp
 
 bool success = false;
 
-void backtrack(multimap<int,string>& mm, string line, map<string,set<string>>::iterator itr, map<string,set<string>>::iterator itr_end, vector<char>& record, vector<char>& rev_record)
+void backtrack(multimap<int,string>& mm, map<string,set<string>>::iterator itr, map<string,set<string>>::iterator itr_end, vector<char>& record, vector<char>& rev_record)
 {
 	if(itr == itr_end)
 	{
@@ -74,7 +74,7 @@ void backtrack(multimap<int,string>& mm, string line, map<string,set<string>>::i
 			record[cword[i] - 'a'] = s[i];
 			rev_record[s[i] - 'a'] = cword[i];
 		}
-		backtrack(mm,line,next(itr,1),itr_end,record,rev_record);	
+		backtrack(mm,next(itr,1),itr_end,record,rev_record);	
 		if(!success)
 		{
 			for(i=0; i < cword.length(); i++)
@@ -108,10 +108,9 @@ int main(void)
 	{
 		map<string,set<string>> ctext; 
 		build_ctext_dict(ptext,ctext,line);
-		vector<char> record(26,'*');
-		vector<char> rev_record(26,'*');
+		vector<char> record(26,'*'), rev_record(26,'*');
 		success = false;
-		backtrack(ptext,line,ctext.begin(),ctext.end(),record,rev_record);
+		backtrack(ptext,ctext.begin(),ctext.end(),record,rev_record);
 		for(i=0; i < line.length(); i++)
 		{
 			if(line[i] == ' ') {cout << line[i]; continue;}
