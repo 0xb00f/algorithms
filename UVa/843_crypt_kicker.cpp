@@ -26,11 +26,9 @@ void build_ctext_dict(multimap<int,string>& pmm, map<string,set<string>>& m, str
 {
 	istringstream ss(line);
 	string cword;
-	// go through each cryptword
 	while(ss >> cword)
 	{
 		auto search = pmm.equal_range(cword.length());
-		// find each plain word of same length
 		for(auto itr = search.first; itr != search.second; itr++)
 		{
 			if(same_structure(cword,itr->second)) m[cword].insert(itr->second);
