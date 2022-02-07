@@ -1,41 +1,52 @@
-import byte_rep as rep
 from Crypto.Cipher import AES
+import base64
 
 def to_blocks(data,size):
 
-    return [data[i:i+size] for i in range(0,len(data),size)]
+	return [data[i:i+size] for i in range(0,len(data),size)]
 
-# get file data
-with open('c7.txt') as _file:
+def pad_block(b,blen):
 
-    file_data = _file.read()
-    data = rep.DataRep()
-    data.setFromHexString(file_data)
-    
-# pad the plaintext
+	diff = blen - len(b)
+         
+	return b + b'\x04'*diff
 
-# split data into 16 byte blocks
-blocks = to_blocks(data.toIntList())
+def CBC_encrypt(blocks,cipher,IV):
 
-# intialise cipher (?), key, initial vector
-IV = bytes(16)
+	return_bytes = b''
+
+	for b in blocks:
+	
+		b = bytes([x^y for (x,y) in zip(b,IV)])
+		enc_block = cipher.encrypt(b)
+		return_bytes += enc_block
+		IV = enc_block
+
+	return return_bytes
+
+def CBC_decrypt(blocks,cipher,IV):
+
+	return_bytes = b''
+
+	for b in blocks:
+    	
+		dec_block = cipher.decrypt(b)
+		return_bytes += bytes([x^y for (x,y) in zip(dec_block,IV)])
+		IV = b
+
+	return return_bytes
+
+# intialise cipher
+IV = b'0000000000000000'
 key = b'YELLOW SUBMARINE'
 cipher = AES.new(key,AES.MODE_ECB)
 
-# for each block
-for b in block:
-    
-    # xor the block with the iv - figure this out, not object method
-    '''
-    would it be useful it all these transformations on the data,
-    such as turning into block and operating on them
-    '''
-    
-    # encrypt the block using the key
+#file data
+with open('s2c2.txt') as _file:
 
-    '''
-    #cipher = AES.new(key,AES.MODE_ECB)
-    curr_block = cipher.decrypt(b)
-    ??? what does this do? do i decrypt? how do i build a plaintext?
-    '''
-    # emcrypted block becomes new iv
+	file_data = _file.read()
+	data = base64.b64decode(file_data)
+
+blocks = to_blocks(data,16)
+decrypted_text = CBC_decrypt(blocks,cipher,IV)
+print(decrypted_text)
