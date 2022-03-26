@@ -4,7 +4,6 @@ import os
 def pad_bytes(text):
 
 	diff = len(text) % 16
-	text = text.encode()
 
 	if diff == 0:
 
@@ -32,33 +31,24 @@ def encode_profile(usrdict):
 
 def profile_for(user_email):
 	
-	fake_db = { 
-		'dan@wow.com' : parse_profile('email=dan@wow.com&uid=666&role=user'),
-		'boof@kd.com.au' : parse_profile('email=boof@kd.com.au&uid=420&role=user')
-	}
-
 	sanitise_email = user_email.replace('=','').replace('&','')
-
-	if sanitise_email not in fake_db:
-
-		return None
-
-	return encode_profile(fake_db[sanitise_email])
+	profile = { 'email' : sanitise_email, 'uid' : '10', 'role' : 'user'}
+	return encode_profile(profile)
 
 def encrypt_profile(profile,cipher):
 	
-	profile = pad_bytes(profile_for(profile))
+	profile = pad_bytes(profile_for(profile).encode())
 	return cipher.encrypt(profile)
 
 def decrypt_profile(profile,cipher):
 	
 	decrypted = cipher.decrypt(profile).replace(b"\x04",b"")
 	return parse_profile(decrypted.decode('ascii'))
-
-test = "dan@wow.com"
-random_key = os.urandom(16)
-cipher = AES.new(random_key,AES.MODE_ECB)
-print(profile_for(test))
-print(decrypt_profile(encrypt_profile(test,cipher),cipher))
-
 #attack!!!
+random_key = os.urandom(16)
+cipher = AES.new(random_key,AES.MODE_ECB) 
+paste_block = cipher.encrypt(pad_bytes(b'admin'))
+email = "1234@1234.com"
+enc_profile = encrypt_profile(email,cipher)
+admin_profile = enc_profile[:-16] + paste_block
+print(decrypt_profile(admin_profile,cipher))
