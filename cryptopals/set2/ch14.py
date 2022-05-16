@@ -10,15 +10,17 @@ def random_bytes(num):
 def pad_bytes(text):
 
 	diff = len(text) % 16
-
+	
+	return text + bytes([16-diff])*(16-diff)
+'''
 	if diff == 0:
 
 		return text
 
 	else:
 		
-		return text + (b'A' * (16-diff)) #random_bytes(16-diff)
-	
+		return text + bytes([diff]) * (16-diff) #random_bytes(16-diff)
+'''	
 def to_blocks(data,size):
 
 	return [data[i:i+size] for i in range(0,len(data),size)]
